@@ -210,7 +210,7 @@ textarea{width:100%; font:inherit; font-size:12px; border:1px solid var(--line);
   <p class="mut">Les données sont synchronisées automatiquement avec l'équipe (serveur en ligne) et gardées aussi en local sur cet appareil, au cas où vous seriez hors connexion. Utilisez Export pour une sauvegarde de secours.</p>
 </div></div>
 <div id="toast"></div>
-<div id="verBadge">v0.0.21</div>
+<div id="verBadge">v0.0.22</div>
 <script>
 "use strict";
 /* ================= STATUTS ================= */
@@ -246,7 +246,7 @@ const JF={};
 })();
 
 /* ================= ETAT ================= */
-const KEY="planning-equipe-v0.0.21";
+const KEY="planning-equipe-v0.0.22";
 const nowD=new Date();
 let S=load();
 let month=nowD.getMonth(), year=nowD.getFullYear();
@@ -256,7 +256,7 @@ let sel=null, rangeMode=false, rangeStart=null, rangeSt=null, rangeP=null;
 function load(){
   try{
     let j=localStorage.getItem(KEY),src=KEY;
-    if(!j)for(const k of ["planning-equipe-v0.0.21","planning-equipe-v0.0.20","planning-equipe-v0.0.19","planning-equipe-v0.0.17","planning-equipe-v0.0.16","planning-equipe-v0.0.15","planning-equipe-v0.0.14","planning-equipe-v0.0.13","planning-equipe-v0.0.12","planning-equipe-v0.0.11","planning-equipe-v0.0.10","planning-equipe-v0.0.09","planning-equipe-v0.0.08","planning-equipe-v0.0.07","planning-equipe-v0.0.06","planning-equipe-v0.0.05","planning-equipe-v1"]){const j2=localStorage.getItem(k); if(j2){j=j2;src=k;break;}}
+    if(!j)for(const k of ["planning-equipe-v0.0.22","planning-equipe-v0.0.21","planning-equipe-v0.0.20","planning-equipe-v0.0.19","planning-equipe-v0.0.17","planning-equipe-v0.0.16","planning-equipe-v0.0.15","planning-equipe-v0.0.14","planning-equipe-v0.0.13","planning-equipe-v0.0.12","planning-equipe-v0.0.11","planning-equipe-v0.0.10","planning-equipe-v0.0.09","planning-equipe-v0.0.08","planning-equipe-v0.0.07","planning-equipe-v0.0.06","planning-equipe-v0.0.05","planning-equipe-v1"]){const j2=localStorage.getItem(k); if(j2){j=j2;src=k;break;}}
     if(j){const o=JSON.parse(j); if(o&&o.membres&&o.cells){o.fresh=(src===KEY&&!o.lastSaved);return o;}}
   }catch(e){}
   return {titre:"Planning équipe — Agence de Pau", membres:[], cells:{}, fermetures:[], historique:[],fresh:true};
@@ -271,11 +271,12 @@ function save(){
   sbPush();
 }
 
-/* ================= SYNC ÉQUIPE (Supabase, v0.0.21) ================= */
+/* ================= SYNC ÉQUIPE (Supabase, v0.0.22) ================= */
 const SB_URL="https://qixxyzjpqcoupzwpwvfi.supabase.co";
 const SB_KEY="sb_publishable_Amzdz-CFKCmSChko481hQg_oEV03xRD";
 const SB_ID="planning";
 let sbState="off",sbWS=null,sbRetryT=null,sbDirty=false;
+const SB_TOP="realtime:postgres:public:planning_data";
 function sbHeaders(){return{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json"};}
 function sbWeight(d){try{return (d&&d.membres?d.membres.length:0)*1000+(d&&d.cells?Object.keys(d.cells).length:0)+(d&&d.fermetures?d.fermetures.length:0);}catch(e){return 0;}}
 function sbEmpty(d){try{return (d&&d.membres?d.membres.length:0)===0&&(d&&d.cells?Object.keys(d.cells).length:0)===0&&(d&&d.fermetures?d.fermetures.length:0)===0;}catch(e){return true;}}
@@ -291,12 +292,23 @@ function renderSync(){
   else if(sbState==="error"){el.textContent="⚠️ Hors ligne — mode local";el.className="err";el.title="Serveur inaccessible. Vos modifications restent sur cet appareil et seront envoyées au retour de la connexion. Cliquez pour réessayer. Si le projet est en pause (plus de 7 jours sans accès), ouvrez une fois le tableau de bord Supabase pour le réactiver.";el.onclick=function(){sbSetState("connecting");sbSyncFull();};}
   else{el.textContent="";}
 }
+function sbApply(d){
+  if(!d)return false;
+  const rl=d.lastSaved;
+  const srvE=sbEmpty(d),locE=sbEmpty(S);
+  if((!S.lastSaved||(!srvE&&rl&&rl>S.lastSaved))&&(rl!==S.lastSaved||sbWeight(d)>sbWeight(S))||(srvE!==locE&&!srvE&&locE)){
+    S=d;saveLocalOnly();render();renderTlbar();sbDirty=false;toast("🔄 Planning mis à jour par l'équipe");return true;
+  }
+  return false;
+}
+function sbPoll(){if(viewMode)return;sbFetch().then(function(rows){const row=rows&&rows[0];if(row&&row.data)sbApply(row.data);}).catch(function(){});}
+setInterval(function(){if(!viewMode)sbPoll();},20000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&!viewMode)sbSyncFull();});
 function sbPush(){
   if(viewMode||typeof fetch==="undefined"||!sbDirty)return;
   if(sbEmpty(S))return;
-  sbDirty=false;
   const pb=JSON.stringify({id:SB_ID,data:S});
-  fetch(SB_URL+"/rest/v1/planning_data",{method:"POST",headers:Object.assign(sbHeaders(),{"Prefer":"return=minimal,resolution=merge-duplicates"}),body:pb}).then(function(r){if(r.ok&&sbState!=="error")sbSetState("online");else if(sbState!=="error")sbSetState("offline");}).catch(function(){if(sbState!=="error")sbSetState("offline");});
+  fetch(SB_URL+"/rest/v1/planning_data",{method:"POST",headers:Object.assign(sbHeaders(),{"Prefer":"return=minimal,resolution=merge-duplicates"}),body:pb}).then(function(r){if(r.ok){sbDirty=false;if(sbState!=="error")sbSetState("online");}else{sbDirty=true;if(sbState!=="error")sbSetState("offline");}}).catch(function(){sbDirty=true;if(sbState!=="error")sbSetState("offline");});
 }
 function sbRetry(){clearTimeout(sbRetryT);sbRetryT=setTimeout(function(){if(!viewMode)sbSyncFull();},15000);}
 function sbInit(){renderSync();sbSyncFull();}
@@ -307,11 +319,8 @@ function sbSyncFull(){
   sbFetch().then(function(rows){
     const row=rows&&rows[0];
     if(row&&row.data){
-      const rl=row.data.lastSaved;
-      const srvE=sbEmpty(row.data),locE=sbEmpty(S);
-      if(fresh||!S.lastSaved||(!srvE&&rl&&rl>S.lastSaved)||(rl===S.lastSaved&&sbWeight(row.data)>sbWeight(S))||(srvE!==locE&&!srvE&&locE)){
-        S=row.data;saveLocalOnly();render();renderTlbar();sbDirty=false;toast("🔄 Version la plus récente du planning chargée");
-      }
+      if(fresh){S=row.data;saveLocalOnly();render();renderTlbar();sbDirty=false;toast("🔄 Version la plus récente du planning chargée");}
+      else sbApply(row.data);
     }
     sbPush();
     sbSetState("online");
@@ -324,21 +333,18 @@ function sbConnect(){
   try{if(typeof WebSocket!=="undefined")ws=new WebSocket(SB_URL.replace(/^https/,"wss")+"/realtime/v1/websocket?apikey="+SB_KEY);}catch(e){ws=null;}
   if(!ws){setTimeout(sbConnect,10000);return;}
   sbWS=ws;
-  ws.onopen=function(){ws.send(JSON.stringify({topic:"realtime:planning_data",event:"phx_join",payload:{access_token:"",params:{event:"postgres_changes",payload:{postgres_changes:[{schema:"public",table:"planning_data",filter:"id=eq."+SB_ID}]}},ref:"1"},join_ref:"1"}));};
+  ws.onopen=function(){ws.send(JSON.stringify({topic:SB_TOP,event:"phx_join",payload:{config:{postgres_changes:[{event:"INSERT",schema:"public",table:"planning_data",filter:"id=eq."+SB_ID},{event:"UPDATE",schema:"public",table:"planning_data",filter:"id=eq."+SB_ID}]}},ref:"1",join_ref:"1"}));ws._hb=setInterval(function(){try{ws.send(JSON.stringify({topic:SB_TOP,event:"heartbeat",payload:{},ref:""+Date.now()}));}catch(e){}},25000);};
   ws.onmessage=function(e){
     let m;try{m=JSON.parse(e.data);}catch(err){return;}
-    if(m.event==="phx_reply"&&m.payload&&m.payload.status==="ok"){sbSetState("online");return;}
-    if(m.event==="postgres_changes"&&m.payload&&m.payload.record){
-      const rec=m.payload.record;
-      if(rec.id!==SB_ID)return;
-      if(rec.data&&rec.data.lastSaved===S.lastSaved&&sbWeight(rec.data)<=sbWeight(S))return;
-      const rl2=rec.data&&rec.data.lastSaved;const srvE2=sbEmpty(rec.data),locE2=sbEmpty(S);
-      if((!S.lastSaved||(!srvE2&&rl2&&rl2>S.lastSaved))&&(rl2!==S.lastSaved||sbWeight(rec.data)>sbWeight(S))||(srvE2!==locE2&&!srvE2&&locE2)){
-        S=rec.data;saveLocalOnly();render();renderTlbar();sbDirty=false;toast("🔄 Planning mis à jour par l'équipe");
-      }
+    if(m.event==="phx_reply"){if(m.payload&&m.payload.status==="ok")sbSetState("online");else{try{ws.close();}catch(e2){}}return;}
+    if(m.event==="system"&&m.payload&&m.payload.status==="ok"){sbSetState("online");return;}
+    if(m.event==="postgres_changes"&&m.payload){
+      const d=m.payload.data||{};const rec=d.record||m.payload.record;
+      if(!rec||rec.id!==SB_ID)return;
+      sbApply(rec.data);
     }
   };
-  ws.onclose=function(){sbWS=null;if(!viewMode)sbSetState("offline");setTimeout(sbConnect,8000);};
+  ws.onclose=function(){clearInterval(ws._hb);sbWS=null;if(!viewMode)sbSetState("offline");setTimeout(sbConnect,8000);};
   ws.onerror=function(){try{ws.close();}catch(e){}};
 }
 function b64e(s){return btoa(unescape(encodeURIComponent(s)));}
@@ -394,7 +400,7 @@ function render(){
   document.title=viewMode?"Planning (lecture seule)":(S.titre||"Planning");
   elTitle.innerHTML=esc(S.titre||"Planning")+
     (viewMode?'':' <button class="edit-title" id="editTitle" title="Modifier le nom">✏️</button>')+
-    '<span class="ver">v0.0.21</span>';
+    '<span class="ver">v0.0.22</span>';
   if(viewMode){
     saveInfo.innerHTML='<span class="chip ro">📖 Lecture seule</span>';
   }else if(S.lastSaved){
@@ -827,7 +833,6 @@ $("fermList").addEventListener("click",e=>{const b=e.target.closest(".fchip b[da
       else{month=11;year=2026;}
     }catch(err){toast("❌ Lien de partage illisible",true);}
   }else{
-    S.lastSaved=new Date().toISOString();S.fresh=false;saveLocalOnly();
     const t=new Date();
     if((t.getFullYear()===2026&&t.getMonth()>=8)||t.getFullYear()===2027){month=t.getMonth();year=t.getFullYear();}
     else{month=11;year=2026;}
