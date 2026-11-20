@@ -8,6 +8,7 @@
 <link id="manifestLink" rel="manifest" href="">
 <style>
 :root{
+  --pcolsh:6px 0 8px -5px rgba(0,0,0,.12);
   --c-bureau:#fff3ec; --c-teletravail:#e2d6fb; --c-conge:#ffd9c7; --c-maladie:#f8cdd0;
   --c-formation:#d6c8fb; --c-client:#c9ede0; --c-projet:#ffddb6; --c-partiel:#e9ecef;
   --c-fermeture:#546e7a; --c-absent:#c8ced3; --c-fete:#ffe3d1;
@@ -43,7 +44,8 @@ input,select{font:inherit; padding:7px 9px; border:1px solid var(--line); border
 .mtitle .y{font-size:11px; color:var(--mut);}
 select#yearSel{max-width:92px;}
 table.planning{border-collapse:separate; border-spacing:0; width:100%; min-width:560px; table-layout:fixed; user-select:none;}
-table.planning th{font-size:9.5px; color:var(--mut); font-weight:600; padding:2px 0;}
+table.planning{--theadbg:var(--card);}
+table.planning th{font-size:9.5px; color:var(--mut); font-weight:600; padding:2px 0; background:var(--theadbg);}
 table.planning th.daynum{margin:1px 1px 0; font-size:9px; line-height:1.15;}
 table.planning th.daynum .wl{display:block; font-size:6.5px; line-height:1; opacity:.75;}
 table.planning th.we{color:#c0392b;}
@@ -96,6 +98,7 @@ table.planning td.rs0{outline:3px solid var(--acc); outline-offset:-2px;}
 
 
 table.planning th.pcol,table.planning td.pcol{position:sticky; left:0; z-index:5; background:var(--pcol,#fff);}
+table.planning th.pcol.sc{box-shadow:6px 0 8px -5px rgba(0,0,0,.35);}
 table.planning th.pcol{width:70px;}
 tr.person td.pcol{background:var(--pcol,#fff); font-weight:600; font-size:11.5px; text-align:left; padding:0 6px; height:24px; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-radius:3px; margin:1px;}
 tr.person td.pcol .selname{color:var(--acc);}
@@ -170,6 +173,7 @@ textarea{width:100%; font:inherit; font-size:12px; border:1px solid var(--line);
   --t-formation:#b79aff; --t-client:#6fe0a8; --t-projet:#ffc266; --t-partiel:#9aa3b2;
   --t-fermeture:#aab8c4; --t-absent:#d6dbe1;
   --cell:#1e1a31; --cellb:#463f61; --pcol:#16141f;
+  --theadbg:#16141f; --pcolsh:6px 0 10px -4px rgba(0,0,0,.7);
 }
 [data-theme="dark"] body{background:linear-gradient(160deg,#17101f 0%,#0b0a10 34%,#0b0a10 66%,#150f24 100%) fixed;}
 [data-theme="dark"] header.app{background:linear-gradient(90deg,#131019 0%,#221239 55%,#3b1a63 100%); box-shadow:0 2px 12px rgba(120,60,220,.45); border-bottom:2px solid #c77dff;}
@@ -204,6 +208,52 @@ textarea{width:100%; font:inherit; font-size:12px; border:1px solid var(--line);
 [data-theme="dark"] #toast.err{background:#4a1520;}
 [data-theme="dark"] #verBadge{background:var(--card);}
 [data-theme="dark"] .fchip{background:#241f33;}
+
+/* ============ RESPONSIVE TÉLÉPHONE (v0.1.01) ============ */
+@media(max-width:719px){
+  header.app{box-shadow:0 2px 10px rgba(0,0,0,.25);}
+  .hrow{padding:8px 10px; gap:6px;}
+  h1{font-size:15px; flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .hright{flex:0 0 auto; gap:6px; flex-wrap:nowrap;}
+  .hright #themeBtn{padding:6px 9px; font-size:14px;}
+  #syncInfo,#saveInfo{font-size:11px; padding:3px 7px; max-width:46vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .tlbar{padding:0 10px 8px; gap:6px;}
+  .tlbar button{padding:9px 10px; font-size:13px; min-height:40px;}
+  .rangebar{padding:6px 30px 6px 6px; margin:0 0 8px;}
+  .rangebar button.rb{position:sticky; top:0; z-index:6; height:32px; width:40px; font-size:10px; box-shadow:0 1px 4px rgba(0,0,0,.15);}
+  .rangebar .rbx{top:6px; right:6px; width:24px; height:24px;}
+  .card{padding:8px;}
+  .monnav{padding:7px 6px; gap:6px;}
+  #mPrev,#mNext{width:44px; min-height:44px; font-size:17px; padding:0; flex:0 0 auto;}
+  #mToday{min-height:44px; font-size:13px;}
+  select#monthSel{flex:1 1 auto; max-width:none; font-size:16px; min-width:0; padding:9px 8px;}
+  select#yearSel{flex:1 1 auto; max-width:none; font-size:16px; min-width:0; padding:9px 8px;}
+  .mtitle{flex:0 1 auto; min-width:0; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .mtitle .m{font-size:17px; display:block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .mtitle .y{font-size:13px; display:block; line-height:1.25;}
+  .wrap{padding:8px 6px;}
+  table.planning{min-width:640px;}
+  table.planning th.daynum{font-size:11px; padding:3px 0;}
+  table.planning th.daynum .wl{font-size:7.5px;}
+  table.planning th.wk{font-size:10px; padding:2px 0;}
+  table.planning td{height:40px; min-height:40px;}
+  table.planning td .st{font-size:11px;}
+  .st2{font-size:9px;}
+  table.planning th.pcol{width:86px;}
+  tr.person td.pcol{height:40px; font-size:12.5px; padding:0 8px;}
+  .legend{display:grid; grid-template-columns:repeat(3,1fr); gap:4px 6px; padding:8px 2px 2px;}
+  .leg{justify-content:center; font-size:10.5px; padding:4px 4px; min-height:30px;}
+  .menu{bottom:8px; padding:10px;}
+  #toast{bottom:168px;}
+  #verBadge{bottom:10px; right:10px;}
+  .banner{font-size:12.5px; padding:9px 10px;}
+}
+@media(max-width:380px){
+  table.planning td{height:36px; min-height:36px;}
+  tr.person td.pcol{height:36px; font-size:11.5px;}
+  .hrow{padding:7px 8px;}
+  h1{font-size:14px;}
+}
 </style>
 </head>
 <body>
@@ -255,7 +305,7 @@ textarea{width:100%; font:inherit; font-size:12px; border:1px solid var(--line);
   <p class="mut">Les données sont synchronisées automatiquement avec l'équipe (serveur en ligne) et gardées aussi en local sur cet appareil, au cas où vous seriez hors connexion. Utilisez Export pour une sauvegarde de secours.</p>
 </div></div>
 <div id="toast"></div>
-<div id="verBadge">v0.1.00</div>
+<div id="verBadge">v0.1.01</div>
 <script>
 "use strict";
 /* ================= STATUTS ================= */
@@ -291,7 +341,7 @@ const JF={};
 })();
 
 /* ================= ETAT ================= */
-const KEY="planning-equipe-v0.1.00";
+const KEY="planning-equipe-v0.1.01";
 const nowD=new Date();
 let S=load();
 let month=nowD.getMonth(), year=nowD.getFullYear();
@@ -301,7 +351,7 @@ let sel=null, rangeMode=false, rangeStart=null, rangeSt=null, rangeP=null;
 function load(){
   try{
     let j=localStorage.getItem(KEY),src=KEY;
-    if(!j)for(const k of ["planning-equipe-v0.1.00","planning-equipe-v0.0.23","planning-equipe-v0.0.22","planning-equipe-v0.0.21","planning-equipe-v0.0.20","planning-equipe-v0.0.19","planning-equipe-v0.0.17","planning-equipe-v0.0.16","planning-equipe-v0.0.15","planning-equipe-v0.0.14","planning-equipe-v0.0.13","planning-equipe-v0.0.12","planning-equipe-v0.0.11","planning-equipe-v0.0.10","planning-equipe-v0.0.09","planning-equipe-v0.0.08","planning-equipe-v0.0.07","planning-equipe-v0.0.06","planning-equipe-v0.0.05","planning-equipe-v1"]){const j2=localStorage.getItem(k); if(j2){j=j2;src=k;break;}}
+    if(!j)for(const k of ["planning-equipe-v0.1.01","planning-equipe-v0.1.00","planning-equipe-v0.0.23","planning-equipe-v0.0.22","planning-equipe-v0.0.21","planning-equipe-v0.0.20","planning-equipe-v0.0.19","planning-equipe-v0.0.17","planning-equipe-v0.0.16","planning-equipe-v0.0.15","planning-equipe-v0.0.14","planning-equipe-v0.0.13","planning-equipe-v0.0.12","planning-equipe-v0.0.11","planning-equipe-v0.0.10","planning-equipe-v0.0.09","planning-equipe-v0.0.08","planning-equipe-v0.0.07","planning-equipe-v0.0.06","planning-equipe-v0.0.05","planning-equipe-v1"]){const j2=localStorage.getItem(k); if(j2){j=j2;src=k;break;}}
     if(j){const o=JSON.parse(j); if(o&&o.membres&&o.cells){o.fresh=(src===KEY&&!o.lastSaved);return o;}}
   }catch(e){}
   return {titre:"Planning équipe — Agence de Pau", membres:[], cells:{}, fermetures:[], historique:[],fresh:true};
@@ -462,7 +512,7 @@ function render(){
   if(_tb){_tb.textContent=isDark()?"☀️":"🌙";_tb.title=isDark()?"Passer en mode clair":"Passer en mode sombre (couleurs LGM)";}
   elTitle.innerHTML=esc(S.titre||"Planning")+
     (viewMode?'':' <button class="edit-title" id="editTitle" title="Modifier le nom">✏️</button>')+
-    '<span class="ver">v0.1.00</span>';
+    '<span class="ver">v0.1.01</span>';
   if(viewMode){
     saveInfo.innerHTML='<span class="chip ro">📖 Lecture seule</span>';
   }else if(S.lastSaved){
@@ -542,6 +592,10 @@ function renderTable(){
   });
   h+='</tbody>';
   grid.innerHTML=h;
+  const sc=grid.parentElement;
+  const pths=grid.querySelectorAll(".pcol");
+  const upSc=()=>{const on=sc.scrollLeft>4; pths.forEach(p=>p.classList.toggle("sc",on));};
+  sc.removeEventListener("scroll",sc._upSc); sc._upSc=upSc; sc.addEventListener("scroll",upSc); upSc();
 }
 function renderLegend(){
   const nb=daysIn(year,month+1);
