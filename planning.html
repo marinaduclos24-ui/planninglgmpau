@@ -269,7 +269,7 @@ textarea{width:100%; font:inherit; font-size:12px; border:1px solid var(--line);
   .mtitle .m{font-size:17px; display:block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .mtitle .y{font-size:13px; display:block; line-height:1.25;}
   .wrap{padding:8px 6px;}
-  table.planning{min-width:640px;}
+  table.planning{min-width:800px;}
   table.planning th.daynum{font-size:11px; padding:3px 0;}
   table.planning th.daynum .wl{font-size:7.5px;}
   table.planning th.wk{font-size:10px; padding:2px 0;}
@@ -342,7 +342,7 @@ textarea{width:100%; font:inherit; font-size:12px; border:1px solid var(--line);
   <p class="mut">Les données sont synchronisées automatiquement avec l'équipe (serveur en ligne) et gardées aussi en local sur cet appareil, au cas où vous seriez hors connexion. Utilisez Export pour une sauvegarde de secours.</p>
 </div></div>
 <div id="toast"></div>
-<div id="verBadge">v0.1.03</div>
+<div id="verBadge">v0.1.04</div>
 <script>
 "use strict";
 /* ================= STATUTS ================= */
@@ -558,7 +558,7 @@ function render(){
   if(_tb){const _th=curTheme();_tb.textContent=_th==="dark"?"🎄":(_th==="christmas"?"☀️":"🌙");_tb.title=_th==="dark"?"Passer en mode Noël 🎄":(_th==="christmas"?"Passer en mode clair":"Passer en mode sombre (couleurs LGM)");}
   elTitle.innerHTML=esc(S.titre||"Planning")+
     (viewMode?'':' <button class="edit-title" id="editTitle" title="Modifier le nom">✏️</button>')+
-    '<span class="ver">v0.1.03</span>';
+    '<span class="ver">v0.1.04</span>';
   if(viewMode){
     saveInfo.innerHTML='<span class="chip ro">📖 Lecture seule</span>';
   }else if(S.lastSaved){
