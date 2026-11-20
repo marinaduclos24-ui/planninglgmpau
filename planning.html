@@ -189,6 +189,7 @@ textarea{width:100%; font:inherit; font-size:12px; border:1px solid var(--line);
 [data-theme="dark"] table.planning th.nw{color:var(--mut);}
 [data-theme="dark"] table.planning th.nw .wl{color:var(--mut);}
 [data-theme="dark"] table.planning td{border:1px solid #4d4669;}
+[data-theme="dark"] table.planning td.today{border-color:var(--td);}
 [data-theme="dark"] .leg,.sbtn{background:var(--card);}
 [data-theme="dark"] .sbtn i,[data-theme="dark"] .leg i{border-color:rgba(255,255,255,.3);}
 [data-theme="dark"] .mchip,[data-theme="dark"] .stat-chip{border-color:rgba(255,255,255,.25);}
@@ -209,6 +210,42 @@ textarea{width:100%; font:inherit; font-size:12px; border:1px solid var(--line);
 [data-theme="dark"] #verBadge{background:var(--card);}
 [data-theme="dark"] .fchip{background:#241f33;}
 
+:root[data-theme="christmas"]{
+  --bg:#f7f1e5; --card:#fffdf6; --line:#e6d5ba; --txt:#2f4a2e; --mut:#7c8f6f; --acc:#b3222c;
+  --c-bureau:#f8d7c8; --c-teletravail:#d8ecce; --c-conge:#fbe3ac; --c-maladie:#f4ccd6;
+  --c-formation:#d3e4ef; --c-client:#cbe9da; --c-projet:#f9ddb3; --c-partiel:#e9e7db;
+  --c-fermeture:#8494a3; --c-absent:#d5d8cc; --c-fete:#fbd9ba;
+  --t-bureau:#96341c; --t-teletravail:#2f6b34; --t-conge:#8a5a00; --t-maladie:#9c3557;
+  --t-formation:#2f5c7a; --t-client:#1e6b46; --t-projet:#8a5a10; --t-partiel:#5d6153;
+  --t-fermeture:#22303c; --t-absent:#4a4f42;
+  --cell:#fdfaf1; --cellb:#dcc9a8; --pcol:#fffdf6;
+  --theadbg:#fdf6e8; --pcolsh:6px 0 10px -4px rgba(140,100,40,.3);
+}
+[data-theme="christmas"] body{background:linear-gradient(160deg,#fbeecb 0%,#f7f1e5 34%,#f7f1e5 66%,#d8ecd9 100%) fixed;}
+[data-theme="christmas"] header.app{background:linear-gradient(90deg,#0e3d20 0%,#175c33 55%,#8e2c2f 100%); box-shadow:0 2px 12px rgba(179,34,44,.35); border-bottom:3px solid #f3e2b3;}
+[data-theme="christmas"] .monnav{background:repeating-linear-gradient(45deg,#b3222c 0 10px,#fff6e8 10px 20px); border-color:#8e1b22;}
+[data-theme="christmas"] .monnav select{background:#fffdf6; border-color:#b3222c; color:#2f4a2e;}
+[data-theme="christmas"] .monnav button{background:rgba(255,253,246,.92); border-color:#b3222c; color:#8e1b22;}
+[data-theme="christmas"] .monnav .mtitle .m{color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.4);}
+[data-theme="christmas"] .monnav .mtitle .y{color:#ffe9d6;}
+[data-theme="christmas"] .card{border-color:#e2c99f; box-shadow:0 2px 10px rgba(140,90,30,.12);}
+[data-theme="christmas"] table.planning td{border:1px solid #d9c8a6;}
+[data-theme="christmas"] table.planning th{color:#6b7d5e;}
+[data-theme="christmas"] table.planning th.wk{color:#b3222c;}
+[data-theme="christmas"] table.planning td.today{border-color:var(--td);}
+[data-theme="christmas"] .leg,[data-theme="christmas"] .sbtn{background:#fffdf6;}
+[data-theme="christmas"] .sbtn i,[data-theme="christmas"] .leg i{border-color:rgba(0,0,0,.2);}
+[data-theme="christmas"] .chip,[data-theme="christmas"] button{background:#fffdf6; border-color:#dcc9a8; color:#2f4a2e;}
+[data-theme="christmas"] button.active{background:#fdeee3; border-color:#b3222c; color:#b3222c;}
+[data-theme="christmas"] button.danger{color:#b3222c; border-color:#e5b8b4;}
+[data-theme="christmas"] input,[data-theme="christmas"] select,[data-theme="christmas"] textarea{background:#fffdf6; border-color:#dcc9a8; color:#2f4a2e;}
+[data-theme="christmas"] .memlist li{background:#f6efdc;}
+[data-theme="christmas"] .fchip{background:#f6efdc;}
+[data-theme="christmas"] .menu{background:#fffdf6;}
+[data-theme="christmas"] #verBadge{background:#fffdf6;}
+#snowFlake{position:fixed; inset:0; pointer-events:none; z-index:80; overflow:hidden;}
+#snowFlake span{position:absolute; top:-6vh; color:rgba(255,255,255,.92); text-shadow:0 0 5px rgba(120,190,255,.75); animation:snowfall linear infinite;}
+@keyframes snowfall{from{transform:translateY(-8vh) rotate(0deg);}to{transform:translateY(110vh) rotate(360deg);}}
 /* ============ RESPONSIVE TÉLÉPHONE (v0.1.01) ============ */
 @media(max-width:719px){
   header.app{box-shadow:0 2px 10px rgba(0,0,0,.25);}
@@ -305,7 +342,7 @@ textarea{width:100%; font:inherit; font-size:12px; border:1px solid var(--line);
   <p class="mut">Les données sont synchronisées automatiquement avec l'équipe (serveur en ligne) et gardées aussi en local sur cet appareil, au cas où vous seriez hors connexion. Utilisez Export pour une sauvegarde de secours.</p>
 </div></div>
 <div id="toast"></div>
-<div id="verBadge">v0.1.01</div>
+<div id="verBadge">v0.1.03</div>
 <script>
 "use strict";
 /* ================= STATUTS ================= */
@@ -341,7 +378,7 @@ const JF={};
 })();
 
 /* ================= ETAT ================= */
-const KEY="planning-equipe-v0.1.01";
+const KEY="planning-equipe-v0.1.02";
 const nowD=new Date();
 let S=load();
 let month=nowD.getMonth(), year=nowD.getFullYear();
@@ -351,7 +388,7 @@ let sel=null, rangeMode=false, rangeStart=null, rangeSt=null, rangeP=null;
 function load(){
   try{
     let j=localStorage.getItem(KEY),src=KEY;
-    if(!j)for(const k of ["planning-equipe-v0.1.01","planning-equipe-v0.1.00","planning-equipe-v0.0.23","planning-equipe-v0.0.22","planning-equipe-v0.0.21","planning-equipe-v0.0.20","planning-equipe-v0.0.19","planning-equipe-v0.0.17","planning-equipe-v0.0.16","planning-equipe-v0.0.15","planning-equipe-v0.0.14","planning-equipe-v0.0.13","planning-equipe-v0.0.12","planning-equipe-v0.0.11","planning-equipe-v0.0.10","planning-equipe-v0.0.09","planning-equipe-v0.0.08","planning-equipe-v0.0.07","planning-equipe-v0.0.06","planning-equipe-v0.0.05","planning-equipe-v1"]){const j2=localStorage.getItem(k); if(j2){j=j2;src=k;break;}}
+    if(!j)for(const k of ["planning-equipe-v0.1.02","planning-equipe-v0.1.01","planning-equipe-v0.1.00","planning-equipe-v0.0.23","planning-equipe-v0.0.22","planning-equipe-v0.0.21","planning-equipe-v0.0.20","planning-equipe-v0.0.19","planning-equipe-v0.0.17","planning-equipe-v0.0.16","planning-equipe-v0.0.15","planning-equipe-v0.0.14","planning-equipe-v0.0.13","planning-equipe-v0.0.12","planning-equipe-v0.0.11","planning-equipe-v0.0.10","planning-equipe-v0.0.09","planning-equipe-v0.0.08","planning-equipe-v0.0.07","planning-equipe-v0.0.06","planning-equipe-v0.0.05","planning-equipe-v1"]){const j2=localStorage.getItem(k); if(j2){j=j2;src=k;break;}}
     if(j){const o=JSON.parse(j); if(o&&o.membres&&o.cells){o.fresh=(src===KEY&&!o.lastSaved);return o;}}
   }catch(e){}
   return {titre:"Planning équipe — Agence de Pau", membres:[], cells:{}, fermetures:[], historique:[],fresh:true};
@@ -464,7 +501,7 @@ function fmtJ(n){return (n%1)?(String(n).replace(".",",")):String(Math.round(n))
 function isFete(y,mo,d){return !!JF[y+"-"+mo+"-"+d];}
 // Degradé du jour en cours : orange LGM (1er du mois) -> violet LGM (dernier jour)
 const _TA=[255,68,0],_TB=[182,80,254];
-function gradTodayColor(y,mo,d){const n=new Date(y,mo,0).getDate();const t=(d-1)/Math.max(1,n-1);const c=_TA.map((a,i)=>Math.round(a+(_TB[i]-a)*t));return{rgb:"rgb("+c.join(",")+")",rgba:al=>"rgba("+c.join(",")+","+al+")"};}
+function gradTodayColor(y,mo,d){if(curTheme()==="christmas"){const n2=new Date(y,mo,0).getDate();const t2=(d-1)/Math.max(1,n2-1);const c2=[211,47,47].map((a,i)=>Math.round(a+([24,90,48][i]-a)*t2));return{rgb:"rgb("+c2.join(",")+")",rgba:al=>"rgba("+c2.join(",")+","+al+")"};}const n=new Date(y,mo,0).getDate();const t=(d-1)/Math.max(1,n-1);const c=_TA.map((a,i)=>Math.round(a+(_TB[i]-a)*t));return{rgb:"rgb("+c.join(",")+")",rgba:al=>"rgba("+c.join(",")+","+al+")"};}
 function isClosed(y,mo,d){const p2=x=>String(x).padStart(2,"0");return (S.fermetures||[]).indexOf(y+"-"+p2(mo)+"-"+p2(d))>=0;}
 function isWeekend(y,mo,d){const g=new Date(y,mo,d).getDay();return g===0||g===6;}
 function renderFermList(){const el=$("fermList");if(!el)return;const arr=S.fermetures||[];el.innerHTML=arr.length?arr.slice().sort().map(f=>{const p=f.split("-");const lab=(+p[2])+"/"+(+p[1])+"/"+p[0];return "<span class=\"fchip\">🚪 "+lab+"<b data-f=\""+f+"\" title=\"Retirer cette fermeture\"> ✕</b></span>";}).join(""):"<span class=\"mut\">Aucune fermeture enregistrée</span>";}
@@ -484,35 +521,44 @@ function toast(msg,err){
 }
 function setManifest(){
   try{
-    const m={name:S.titre||"Planning",short_name:"Planning",start_url:location.href,display:"standalone",background_color:isDark()?"#0b0a10":"#eef1f5",theme_color:isDark()?"#131019":"#ffffff"};
+    const _thm=curTheme();const m={name:S.titre||"Planning",short_name:"Planning",start_url:location.href,display:"standalone",background_color:_thm==="christmas"?"#f7f1e5":(_thm==="dark"?"#0b0a10":"#eef1f5"),theme_color:_thm==="christmas"?"#0e3d20":(_thm==="dark"?"#131019":"#ffffff")};
     $("manifestLink").href="data:application/manifest+json,"+encodeURIComponent(JSON.stringify(m));
   }catch(e){}
 }
 
+let _snowT=null;
+function snowShow(){if(_snowT||!document.body||curTheme()!=="christmas")return;const fl=document.createElement("div");fl.id="snowFlake";for(let i=0;i<28;i++){const s=document.createElement("span");s.style.left=(Math.random()*100)+"vw";s.style.fontSize=(8+Math.random()*12)+"px";s.style.animationDuration=(6+Math.random()*7)+"s";s.style.animationDelay=(-Math.random()*12)+"s";s.textContent=Math.random()<0.18?"⭐":"❄";fl.appendChild(s);}document.body.appendChild(fl);_snowT=fl;}
+function snowHide(){if(_snowT){_snowT.remove();_snowT=null;}}
 /* ================= THEME ================= */
 function isDark(){return document.documentElement.dataset.theme==="dark";}
-function setTheme(d){
+function curTheme(){return document.documentElement.dataset.theme||"light";}
+function themeNext(){const c=curTheme();return c==="dark"?"christmas":(c==="christmas"?"light":"dark");}
+function setTheme(m){
   try{
-    if(d)document.documentElement.dataset.theme="dark";else delete document.documentElement.dataset.theme;
-    localStorage.setItem("planning-equipe-theme",d?"dark":"light");
+    if(m==="dark")document.documentElement.dataset.theme="dark";
+    else if(m==="christmas")document.documentElement.dataset.theme="christmas";
+    else delete document.documentElement.dataset.theme;
+    localStorage.setItem("planning-equipe-theme",m||"light");
     setManifest();
   }catch(e){}
 }
 try{
   const _ts=localStorage.getItem("planning-equipe-theme");
-  setTheme(_ts?_ts==="dark":window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const _thDef=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+  setTheme(_ts||_thDef);
 }catch(e){}
-$("themeBtn").addEventListener("click",()=>{setTheme(!isDark());render();});
+$("themeBtn").addEventListener("click",()=>{const t=themeNext();setTheme(t);render();if(t==="christmas")toast("🎄 Joyeuses fétes ! Bon courage pour le planning de décembre 😉");});
 
 /* ================= RENDU ================= */
 function render(){
   setManifest();
+  if(curTheme()==="christmas")snowShow();else snowHide();
   document.title=viewMode?"Planning (lecture seule)":(S.titre||"Planning");
   const _tb=$("themeBtn");
-  if(_tb){_tb.textContent=isDark()?"☀️":"🌙";_tb.title=isDark()?"Passer en mode clair":"Passer en mode sombre (couleurs LGM)";}
+  if(_tb){const _th=curTheme();_tb.textContent=_th==="dark"?"🎄":(_th==="christmas"?"☀️":"🌙");_tb.title=_th==="dark"?"Passer en mode Noël 🎄":(_th==="christmas"?"Passer en mode clair":"Passer en mode sombre (couleurs LGM)");}
   elTitle.innerHTML=esc(S.titre||"Planning")+
     (viewMode?'':' <button class="edit-title" id="editTitle" title="Modifier le nom">✏️</button>')+
-    '<span class="ver">v0.1.01</span>';
+    '<span class="ver">v0.1.03</span>';
   if(viewMode){
     saveInfo.innerHTML='<span class="chip ro">📖 Lecture seule</span>';
   }else if(S.lastSaved){
